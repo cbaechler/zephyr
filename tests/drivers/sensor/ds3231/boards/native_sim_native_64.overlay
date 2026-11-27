@@ -1,0 +1,17 @@
+/*
+ * Copyright The Zephyr Project Contributors
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+&i2c0 {
+	status = "okay";
+
+	ds3231: ds3231@68 {
+		compatible = "maxim,ds3231-mfd";
+		reg = <0x68>;
+
+		ds3231_sensor: sensor {
+			compatible = "maxim,ds3231-sensor";
+		};
+	};
+};
