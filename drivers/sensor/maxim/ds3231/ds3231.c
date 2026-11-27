@@ -17,7 +17,6 @@
 #include <zephyr/sys/util.h>
 #include <zephyr/sys/byteorder.h>
 #include <zephyr/sys/__assert.h>
-#include <math.h>
 
 #include "ds3231.h"
 
@@ -40,11 +39,11 @@ struct sensor_ds3231_conf {
 static inline void sensor_ds3231_temp_from_raw(struct sensor_ds3231_data *data,
 					       struct sensor_value *val)
 {
-	const uint16_t raw_temp = data->raw_temp;
-	uint8_t frac = raw_temp & 3;
+	/* 10-bit two's complement value in units of 0.25 degC */
+	const int32_t micro_c = sign_extend(data->raw_temp, 9) * 250000;
 
-	val->val1 = (int8_t)(raw_temp & GENMASK(8, 2)) >> 2;
-	val->val2 = (frac * 25) * pow(10, 4);
+	val->val1 = micro_c / 1000000;
+	val->val2 = micro_c % 1000000;
 }
 
 int sensor_ds3231_read_temp(const struct device *dev, uint16_t *raw_temp)
