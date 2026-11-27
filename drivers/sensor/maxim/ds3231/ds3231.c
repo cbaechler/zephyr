@@ -52,11 +52,12 @@ int sensor_ds3231_read_temp(const struct device *dev, uint16_t *raw_temp)
 
 	uint8_t buf[2];
 	int err = mfd_ds3231_i2c_get_registers(config->mfd, DS3231_REG_TEMP_MSB, buf, 2);
-	*raw_temp = ((uint16_t)((buf[0]) << 2) | (buf[1] >> 6));
 
 	if (err != 0) {
 		return err;
 	}
+
+	*raw_temp = ((uint16_t)((buf[0]) << 2) | (buf[1] >> 6));
 
 	return 0;
 }
